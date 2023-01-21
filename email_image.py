@@ -8,9 +8,9 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-SENDER = "charanvir123@gmail.com"
+SENDER = os.getenv("EMAIL")
 PASSWORD = os.getenv("EMAIL_PASSWORD")
-RECEIVER = "charanvir123@gmail.com"
+RECEIVER = os.getenv("EMAIL")
 
 
 def send_email(image_path):
