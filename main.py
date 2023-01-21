@@ -1,3 +1,4 @@
+import glob
 import cv2
 import time
 from email_image import send_email
@@ -9,11 +10,11 @@ time.sleep(1)
 
 first_frame = None
 status_list = []
+count = 1
 
 while True:
     status = 0
     check, frame = video.read()
-
     # Will convert the frame into grayscale
     gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -58,13 +59,18 @@ while True:
         rectangle = cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 3)
         if rectangle.any():
             status = 1
+            # only want to produce the image if the status is 1, meaning a new object is in the FoV
+            cv2.imwrite(f"images/{count}.png", frame)
+            count = count + 1
+            produced_images = glob.glob("images/*.png")
+            image_to_send = produced_images[int(len(produced_images)/2)]
     # will continually add the status of 1 when a rectangle is present
     status_list.append(status)
     status_list = status_list[-2:]
 
     # checking if the last two items of the list are 1 and 0, therefore indicating that the object has left the video
     if status_list[0] == 1 and status_list[1] == 0:
-        send_email()
+        send_email(image_to_send)
 
     # Will result in the current frame with a rectangle on the motion captured image
     cv2.imshow("My Video", frame)
