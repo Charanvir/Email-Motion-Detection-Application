@@ -1,5 +1,4 @@
 import smtplib
-import ssl
 # Meta data about images
 import imghdr
 # Build complex email objects
