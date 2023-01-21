@@ -1,6 +1,6 @@
 import glob
 import os
-
+from threading import Thread
 import cv2
 import time
 from email_image import send_email
@@ -16,9 +16,11 @@ count = 1
 
 
 def clean_folder():
+    print("clean started")
     images = glob.glob("images/*.png")
     for image in images:
         os.remove(image)
+    print("clean ended")
 
 
 while True:
@@ -79,8 +81,12 @@ while True:
 
     # checking if the last two items of the list are 1 and 0, therefore indicating that the object has left the video
     if status_list[0] == 1 and status_list[1] == 0:
-        send_email(image_to_send)
-        clean_folder()
+        email_thread = Thread(target=send_email, args=(image_to_send,))
+        email_thread.daemon = True
+        clean_thread = Thread(target=clean_folder)
+        email_thread.daemon = True
+
+        email_thread.start()
 
     # Will result in the current frame with a rectangle on the motion captured image
     cv2.imshow("My Video", frame)
@@ -93,3 +99,4 @@ while True:
 
 # Stops the video footage
 video.release()
+clean_thread.start()

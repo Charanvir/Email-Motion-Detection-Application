@@ -14,6 +14,7 @@ RECEIVER = "charanvir123@gmail.com"
 
 
 def send_email(image_path):
+    print("Email starting")
     email_message = EmailMessage()
     email_message["Subject"] = "Motion Detected"
     email_message.set_content("Hey, we detected a motion, and have attached an image of the object in motion")
@@ -29,6 +30,7 @@ def send_email(image_path):
     gmail.login(SENDER, PASSWORD)
     gmail.sendmail(SENDER, RECEIVER, email_message.as_string())
     gmail.quit()
+    print("email ending")
 
 
 if __name__ == "__main__":
